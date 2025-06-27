@@ -30,11 +30,11 @@ import pickle
 import matplotlib as mpl
 #%% config default settings
 
-ordner_pfad =r'A:\example\directory'# basedirectory to the signals
+ordner_pfad =r''# basedirectory to the signals
 decision_pfad = None #Deprecated
 training_signal = None
 annotation = None
-training_values_path = r'A:\my\directory\all_data_tuples.xlsx' # filedirectory to the training data
+training_values_path = r'' # filedirectory to the training data
 fs_A = 128
 fs_B = 32
 signal_length = 15
@@ -100,6 +100,7 @@ def lin_reg(signal_chunks, cross_pos):
 
 def variance(slopes, intersect, cross_pos):
     '''
+    
     A function wich calculates the variance of the data relative to the lin. regression.
     
     Parameters
@@ -110,10 +111,12 @@ def variance(slopes, intersect, cross_pos):
         The y-intersect for ever lin. regression.
     cross_pos : list
         The position of every zero crossing as an array for every signalchunk.
+    
     Returns
     -------
     var : list
         The normalised variance of the data relative to the lin. regression
+        
     '''
     var=[]
     for i in range(len(slopes)):
@@ -244,7 +247,6 @@ def import_decisionpoints():
 def read_signal(mod_path, signal_key, time_key, sep=',', skiprows=0, date_format= None, header='infer'): 
     '''
     
-
     Parameters
     ----------
     mod_path : string
@@ -257,8 +259,7 @@ def read_signal(mod_path, signal_key, time_key, sep=',', skiprows=0, date_format
     time_key : string
         Das Schlüsselwort für den Pandas.DataFrame um auf die Zeitstempel zuzugreifen.
         The keyword/number for Pandas.Dataframe timestamp-column
-        no:   time_key=0
-            corsano: time_key='date'
+        somno: time_key=0; corsano: time_key='date'
     sep : string, optional
         The seperator used to seperate the columns. Only necessary for Somno. Corsanofiles use the default.    
         The default is ','.
@@ -278,7 +279,7 @@ def read_signal(mod_path, signal_key, time_key, sep=',', skiprows=0, date_format
         The signal as a timeseries.
     timestamps : Series
         the timestamps as pandas.Series.
-
+        
     '''
     df=pd.read_csv(mod_path, sep=sep, skiprows=skiprows, header=header)
     df=df.reset_index()
@@ -441,6 +442,7 @@ def ROC(values, refdata, thresholds = None):
 
 def ROC_mid(values):
     '''
+    
     !!!Deprecated!!!
     Calculates a mean ROC for every SQI.
     
@@ -448,11 +450,12 @@ def ROC_mid(values):
     ----------
     values : list of lists
         A list of ROC-data for a specific SQI
+        
     Returns
     -------
     list
         A list of the mean Sensitivity (Index 0), mean specificity (index 1)
- 
+    
     '''
 
     ROC_mid1=[]
@@ -497,6 +500,7 @@ def minimize(values):
 
 def preprocessing(training_signal_path, TN, chunk_length = 1, training = True, plot=True):
     '''
+    
     A preprocessing returns the SQI as objects for each device.
 
     Parameters
@@ -507,15 +511,15 @@ def preprocessing(training_signal_path, TN, chunk_length = 1, training = True, p
         The TN-ID to find the signals within the training_signal_path.
     chunk_length : float, optional
         The chunklength as a Faktor of one minute. The default is 1.
-        Example:
-            chunk_length = 1/6 = 60s/6 = 10s
-            chunk_length = 1.5 = 1.5*60 = 90s -> 1.5 minutes
+        Example::
+        chunk_length = 1/6 = 60s/6 = 10s
+        chunk_length = 1.5 = 1.5*60 = 90s -> 1.5 minutes
     training : bool, optional
         Weather PPG-Eva is in training mode or not. If False, corsano will only used for synchronicing.
         Was used for the aqusition of the training_data. The default is True.
     plot : bool, optional
         If True, the whole signal will be plotted. The default is True.
-
+    
     '''
 
     #clac signallength. signal_length is in config
@@ -854,7 +858,8 @@ class JoinSignals:
         
     def cut(self, signal_length_A, signal_length_B):
         '''
-       Cuts both signals to the same length.
+        
+        Cuts both signals to the same length.
 
         Parameters
         ----------
@@ -866,7 +871,7 @@ class JoinSignals:
         Returns
         -------
         None.
-
+        
         '''
         signal_length_A+=(4 * fs_A)#adding settlement time of filter
         signal_length_B+=(4 * self.sync[2])#adding settlement time of filter
@@ -1010,25 +1015,26 @@ class SQI:
             
     def ZCR(self):
         '''
+        
         Calculate the ZCR for every sequence.
-
+        
         Returns
-        ------
+        -------
         self.signs: list
             A list with values for  the signs of the signalvalues.
-             1 = positive
+            1 = positive
             -1 = negative
         self.cross_pos: list
             A list if the indices where a zero crossing occured.
         self.n_cross: Int
             The number of zero crossings.
-        
         self.slope: float
             the slope of the lin. regression for every sequence.
         self.intersect: float
             the the y-intersect of the lin. regression for every sequence.
         self.variance:
             the variance for every sequence.
+        
         '''
         
         signs=[]
@@ -1633,7 +1639,7 @@ def test_subsets(validation_sets, mean_hist, xedges, yedges, best_thresh, plot=F
 
 def test_testset(test_set, mean_hist, xedges, yedges, best_thresh, val_tupel, plot=False):
     '''
-
+    
     Parameters
     ----------
     test_set : ndarray
@@ -1647,11 +1653,7 @@ def test_testset(test_set, mean_hist, xedges, yedges, best_thresh, val_tupel, pl
     best_thresh : float
         The mean threshold.
     val_tupel : tuple
-        A tuple containing the 
-            mean fpr
-            mean tpr
-            standard deviation of fpr
-            standard deviation of tpr
+        A tuple containing the mean fpr, mean tpr, standard deviation of fpr, standard deviation of tpr
         on the respective indices.
     plot : bool, optional
         If True, the performance ofe the classifier on the testset will be plottet in the ROC-space
@@ -1663,7 +1665,7 @@ def test_testset(test_set, mean_hist, xedges, yedges, best_thresh, val_tupel, pl
         The fpr of the classifier on the testset.
     test_tpr : float
         The tpr of the classifier on the testset.
-
+        
     '''
     #label for confusion matrix
     labels = [0,1]
@@ -1897,7 +1899,7 @@ def process(TN_list, train=False,  plot=False):
         return final_result_somno, final_result_corsano
 
         
-result_somno, result_corsano = process(TN_list, train=True)
+# result_somno, result_corsano = process(TN_list, train=True)
 # result_somno, result_corsano = process(TN_list, train=False)
 
 #%%
